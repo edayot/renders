@@ -15,10 +15,10 @@ def main(release: str):
     os.system(f"model_resolver --load-vanilla --minecraft-version {release} --output-dir {cwd} --load-dir {cwd}/resourcepack")
     os.system("git add .")
     os.system(f"git commit -m '✨ Generate renders for {release}'")
-    os.system("git tag -a f'{release}-renders' -m '✨ Generate renders for {release}'")
+    os.system(f"git tag -a f'{release}-renders' -m '✨ Generate renders for {release}'")
     os.system("git push origin renders --tags")
     os.chdir("../..")
-    os.system("rm -rf branch")
+    # os.system("rm -rf branch")
 
 
 
