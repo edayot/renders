@@ -14,7 +14,7 @@ def main(release: str):
     os.makedirs("resourcepack", exist_ok=True)
     os.system(f"model_resolver --load-vanilla --minecraft-version {release} --output-dir {cwd} --load-dir {cwd}/resourcepack")
     os.system("git add .")
-    os.system(f"git commit -m '✨ Generate renders for {release}'")
+    os.system(f"git commit -m '✨ Generate renders for {release}' --allow-empty")
     os.system(f"git tag -a '{release}-renders' -m '✨ Generate renders for {release}'")
     os.system("git push origin renders --tags")
     os.chdir("../..")
