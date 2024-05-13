@@ -10,6 +10,11 @@ def main(release: str):
     git_url = "https://github.com/edayot/renders.git"
     os.system(f"git clone -b {cloned_branch} {git_url}")
     os.chdir("renders")
+    # check if the release tag already exists
+    if os.system(f"git rev-parse --verify --quiet {release}-renders") == 0:
+        print(f"Release {release} already exists!")
+        return
+
     cwd = os.getcwd()
     os.makedirs("resourcepack", exist_ok=True)
     os.system(f"model_resolver --load-vanilla --minecraft-version {release} --output-dir {cwd} --load-dir {cwd}/resourcepack")
@@ -18,6 +23,7 @@ def main(release: str):
     os.system(f"git tag -a '{release}-renders' -m '✨ Generate renders for {release}'")
     os.system("git push origin renders --tags")
     os.chdir("../..")
+    os.system("rm poetry.lock")
     # os.system("rm -rf branch")
 
 
@@ -25,5 +31,5 @@ def main(release: str):
 
 
 if __name__ == "__main__":
-    release = os.getenv("MC_VERSION", "1.20.6")
+    release = os.getenv("MC_VERSION", "24w19b")
     main(release)
