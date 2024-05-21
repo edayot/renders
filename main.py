@@ -1,7 +1,9 @@
 import os
+import shlex
 
 def main(release: str):
     print(f"Release {release}!")
+    release = shlex.quote(release)
     if os.path.exists("branch"):
         os.system("rm -rf branch")
     os.makedirs("branch", exist_ok=True)
