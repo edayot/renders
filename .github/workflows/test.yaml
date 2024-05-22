@@ -1,4 +1,4 @@
-name: 'Tick'
+name: 'Tick test'
 
 on:
   workflow_dispatch:
