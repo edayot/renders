@@ -26,9 +26,8 @@ def main(release: str):
 
     if "GITHUB_TOKEN" in os.environ:
         token = os.environ["GITHUB_TOKEN"]
-        os.system(f"git push origin renders --tags -u {token}")
-    else:
-        os.system("git push origin renders --tags")
+        os.system(f"git remote set-url origin https://github-actions:{token}@{git_url.replace('https://', '')}")
+    os.system("git push origin renders --tags")
     os.chdir("../..")
     os.system("rm poetry.lock")
     # os.system("rm -rf branch")
