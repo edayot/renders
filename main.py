@@ -23,7 +23,12 @@ def main(release: str):
     os.system("git add .")
     os.system(f"git commit -m '✨ Generate renders for {release}' --allow-empty")
     os.system(f"git tag -a '{release}-renders' -m '✨ Generate renders for {release}'")
-    os.system("git push origin renders --tags")
+
+    if "GITHUB_TOKEN" in os.environ:
+        token = os.environ["GITHUB_TOKEN"]
+        os.system(f"git push origin renders --tags -u {token}")
+    else:
+        os.system("git push origin renders --tags")
     os.chdir("../..")
     os.system("rm poetry.lock")
     # os.system("rm -rf branch")

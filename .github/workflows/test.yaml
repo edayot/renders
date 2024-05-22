@@ -49,9 +49,8 @@ jobs:
       - run: |
             git config --global user.name "github-actions"
             git config --global user.email "action@github.com"
-            git config --global url.https://${{ secrets.GITHUB_TOKEN }}@github.com/.insteadOf https://github.com/
             COMMAND="poetry run python main.py"
             /usr/bin/xvfb-run -s "-screen 0 1920x1080x24 +extension GLX +extension RENDER" $COMMAND
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MC_VERSION: 24w21a
