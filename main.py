@@ -30,7 +30,7 @@ def main(release: str):
     os.system("git push origin renders --tags")
     os.chdir("../..")
     os.system("rm poetry.lock")
-    # os.system("rm -rf branch")
+    os.system("rm -rf branch")
 
 
 
@@ -38,4 +38,8 @@ def main(release: str):
 
 if __name__ == "__main__":
     release = os.getenv("MC_VERSION", "24w19b")
-    main(release)
+    if not "," in release:
+        main(release)
+    else:
+        for r in release.split(","):
+            main(r)
