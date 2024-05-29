@@ -2,6 +2,12 @@ name: 'Tick test'
 
 on:
   workflow_dispatch:
+    inputs:
+      mc_version:
+        description: 'Specify a Minecraft version to check for updates'
+        required: false
+        default: 'latest'
+        type: string
 
 jobs:
   update:
@@ -53,4 +59,4 @@ jobs:
             /usr/bin/xvfb-run -s "-screen 0 1920x1080x24 +extension GLX +extension RENDER" $COMMAND
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MC_VERSION: 24w21a
+          MC_VERSION: ${{ github.event.inputs.mc_version }}
