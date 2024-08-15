@@ -23,7 +23,7 @@ def main(release: str):
     model_resolver_main(
         load_vanilla=True,
         minecraft_version=release,
-        output_dir=cwd,
+        output_dir=f"{cwd}/resourcepack",
         load_dir=cwd
     )
     os.system("git add .")
