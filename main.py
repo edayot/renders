@@ -1,5 +1,6 @@
 import os
 import shlex
+from model_resolver.cli import main as model_resolver_main
 
 def main(release: str):
     print(f"Release {release}!")
@@ -19,7 +20,12 @@ def main(release: str):
 
     cwd = os.getcwd()
     os.makedirs("resourcepack", exist_ok=True)
-    os.system(f"model_resolver --load-vanilla --minecraft-version {release} --output-dir {cwd} --load-dir {cwd}/resourcepack")
+    model_resolver_main(
+        load_vanilla=True,
+        minecraft_version=release,
+        output_dir=cwd,
+        load_dir=cwd
+    )
     os.system("git add .")
     os.system(f"git commit -m '✨ Generate renders for {release}' --allow-empty")
     os.system(f"git tag -a '{release}-renders' -m '✨ Generate renders for {release}'")
@@ -37,7 +43,9 @@ def main(release: str):
 
 
 if __name__ == "__main__":
-    release = os.getenv("MC_VERSION", "24w19b")
+    release = os.getenv("MC_VERSION", "24w33a")
+    if release is None or len(release) == 0:
+        raise ValueError(f"MC_VERSION is not set, got {release}")
     if not "," in release:
         main(release)
     else:

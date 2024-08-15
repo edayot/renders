@@ -5,7 +5,7 @@ on:
     inputs:
       mc_version:
         description: 'Specify a Minecraft version to check for updates'
-        required: false
+        required: true
         default: 'latest'
         type: string
 
