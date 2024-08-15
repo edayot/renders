@@ -19,12 +19,13 @@ def main(release: str):
         return
 
     cwd = os.getcwd()
+    os.system("rm -rf resourcepack")
     os.makedirs("resourcepack", exist_ok=True)
     model_resolver_main(
         load_vanilla=True,
         minecraft_version=release,
-        output_dir=f"{cwd}/resourcepack",
-        load_dir=cwd
+        output_dir=cwd,
+        load_dir=f"{cwd}/resourcepack",
     )
     os.system("git add .")
     os.system(f"git commit -m '✨ Generate renders for {release}' --allow-empty")
