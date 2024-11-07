@@ -2,7 +2,7 @@ import os
 import shlex
 from model_resolver.cli import main as model_resolver_main
 
-def main(release: str, devmode: bool = True):
+def main(release: str, devmode: bool = False):
     print(f"Release {release}!")
     release = shlex.quote(release)
     if os.path.exists("branch"):
@@ -26,6 +26,7 @@ def main(release: str, devmode: bool = True):
         minecraft_version=release,
         output_dir=cwd,
         load_dir=f"{cwd}/resourcepack",
+        disable_missing_texture_error=True,
     )
     
     if not devmode:
