@@ -17,7 +17,7 @@ jobs:
 
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.10'
+          python-version: '3.12'
       
       - name: Install Poetry
         uses: snok/install-poetry@v1
@@ -56,6 +56,7 @@ jobs:
             git config --global user.name "github-actions"
             git config --global user.email "action@github.com"
             COMMAND="poetry run python main.py"
+            export LIBGL_ALWAYS_SOFTWARE=1
             /usr/bin/xvfb-run -s "-screen 0 1920x1080x24 +extension GLX +extension RENDER" $COMMAND
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
