@@ -14,7 +14,8 @@ def checkout_and_publish(branch: str, tag: str, release: str):
     os.system(f"git clone -b {branch} {git_url}")
     os.chdir("renders")
     if os.system(f"git rev-parse --verify --quiet {tag}") == 0 and not devmode:
-        raise ValueError(f"Tag {tag} already exists!")
+        print(f"Tag {tag} already exists, skipping")
+        return
     yield
     if not devmode:
         os.system("git add .")
