@@ -4,7 +4,7 @@ from pathlib import Path
 from beet import ProjectConfig, run_beet
 from contextlib import contextmanager
 
-devmode = False
+devmode = True
 
 class AlreadyExists(Exception):
     pass
@@ -14,8 +14,8 @@ def checkout_and_publish(branch: str, tag: str, release: str):
     os.makedirs(f"branch/{branch}", exist_ok=True)
     os.chdir(f"branch/{branch}")
     git_url = "https://github.com/edayot/renders.git"
-    os.system(f"git clone -b {branch} {git_url}")
-    os.chdir("renders")
+    os.system(f"git clone -b {branch} {git_url} {branch}")
+    os.chdir(branch)
     if os.system(f"git rev-parse --verify --quiet {tag}") == 0 and not devmode:
         print(f"Tag {tag} already exists, skipping")
         raise AlreadyExists(f"Tag {tag} already exists, skipping")
