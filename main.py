@@ -29,7 +29,7 @@ def checkout_and_publish(branch: str, tag: str, release: str):
             os.system(
                 f"git remote set-url origin https://github-actions:{token}@{git_url.replace('https://', '')}"
             )
-        os.system("git push origin renders --tags")
+        os.system(f"git push origin {branch} --tags")
     os.chdir("../../..")
     if not devmode:
         os.system(f"rm -rf branch/{branch}")
