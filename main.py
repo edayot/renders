@@ -4,7 +4,7 @@ from pathlib import Path
 from beet import ProjectConfig, run_beet
 from contextlib import contextmanager
 
-devmode = True
+devmode = False
 
 class AlreadyExists(Exception):
     pass
