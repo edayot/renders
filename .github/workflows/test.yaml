@@ -40,7 +40,8 @@ jobs:
             libxrandr-dev \
             libxv-dev \
             mesa-utils \
-            libgl1-mesa-glx \
+            libgl1 \
+            libglx-mesa0 \
             mesa-common-dev \
             libglapi-mesa \
             libgbm1 \
