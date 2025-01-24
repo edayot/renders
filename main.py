@@ -6,8 +6,10 @@ from contextlib import contextmanager
 
 devmode = False
 
+
 class AlreadyExists(Exception):
     pass
+
 
 @contextmanager
 def checkout_and_publish(branch: str, tag: str, release: str):
@@ -33,7 +35,6 @@ def checkout_and_publish(branch: str, tag: str, release: str):
     os.chdir("../../..")
     if not devmode:
         os.system(f"rm -rf branch/{branch}")
-    
 
 
 def main(release: str):
@@ -56,7 +57,12 @@ def main(release: str):
                     "model_resolver.plugins.render_all_items",
                 ],
                 output=cwd,
-                meta={"model_resolver": {"minecraft_version": release}},
+                meta={
+                    "model_resolver": {
+                        "minecraft_version": release,
+                        "preferred_minecraft_generated": "java",
+                    }
+                },
                 resource_pack={"load": load_dir, "name": load_dir.name},
             )
             with run_beet(config=config) as ctx:
@@ -65,7 +71,9 @@ def main(release: str):
         pass
 
     try:
-        with checkout_and_publish("renders-special", f"{release}-renders-special", release):
+        with checkout_and_publish(
+            "renders-special", f"{release}-renders-special", release
+        ):
             cwd = Path(os.getcwd())
             load_dir = cwd / "resourcepack"
             print(f"Running beet in {cwd}")
@@ -76,14 +84,19 @@ def main(release: str):
                     "model_resolver.plugins.render_all_items",
                 ],
                 output=cwd,
-                meta={"model_resolver": {"minecraft_version": release, "special_rendering": True}},
+                meta={
+                    "model_resolver": {
+                        "minecraft_version": release,
+                        "special_rendering": True,
+                        "preferred_minecraft_generated": "java",
+                    }
+                },
                 resource_pack={"load": load_dir, "name": load_dir.name},
             )
             with run_beet(config=config) as ctx:
                 pass
     except AlreadyExists:
         pass
-
 
 
 if __name__ == "__main__":
