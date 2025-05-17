@@ -1,8 +1,9 @@
 import os
 import shlex
 from pathlib import Path
-from beet import ProjectConfig, run_beet
+from beet import ProjectConfig, run_beet, Context
 from contextlib import contextmanager
+from model_resolver.plugins import Render, get_default_components, resolve_key, Item
 
 devmode = False
 
@@ -97,6 +98,56 @@ def main(release: str):
                 pass
     except AlreadyExists:
         pass
+
+    try:
+        with checkout_and_publish(
+            "renders-webp", f"{release}-renders-webp", release
+        ):
+            cwd = Path(os.getcwd())
+            load_dir = cwd / "resourcepack"
+            print(f"Running beet in {cwd}")
+            os.system("rm -rf resourcepack")
+            os.makedirs("resourcepack", exist_ok=True)
+            config = ProjectConfig(
+                pipeline=[
+                    render_webp,
+                ],
+                output=cwd,
+                meta={
+                    "model_resolver": {
+                        "minecraft_version": release,
+                        "special_rendering": True,
+                        "preferred_minecraft_generated": "java",
+                    }
+                },
+                resource_pack={"load": load_dir, "name": load_dir.name},
+            )
+            with run_beet(config=config) as ctx:
+                pass
+    except AlreadyExists:
+        pass
+
+def render_webp(ctx: Context):
+    render = Render(ctx)
+    for model in render.getter._vanilla.assets.models:
+        namespace, path = model.split(":")
+        render.add_model_task(
+            model,
+            path_ctx=f"{namespace}:render/{path}",
+            animation_mode="webp",
+            animation_framerate=60,
+        )
+    components = get_default_components(ctx)
+    for item in components:
+        namespace, path = resolve_key(item).split(":")
+        render.add_item_task(
+            Item(id=f"{namespace}:{path}"),
+            path_ctx=f"{namespace}:render/items/{path}",
+            animation_mode="webp",
+            animation_framerate=60,
+        )
+    render.run()
+
 
 
 if __name__ == "__main__":
