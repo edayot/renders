@@ -3,7 +3,6 @@ import shlex
 from pathlib import Path
 from beet import ProjectConfig, run_beet, Context
 from contextlib import contextmanager
-from model_resolver.plugins import Render, get_default_components, resolve_key, Item
 
 devmode = False
 
@@ -44,6 +43,8 @@ def main(release: str):
     if os.path.exists("branch"):
         os.system("rm -rf branch")
     os.makedirs("branch", exist_ok=True)
+
+    plugin_path = Path(__file__).parent / "plugin.py"
 
     try:
         with checkout_and_publish("renders", f"{release}-renders", release):
@@ -108,9 +109,10 @@ def main(release: str):
             print(f"Running beet in {cwd}")
             os.system("rm -rf resourcepack")
             os.makedirs("resourcepack", exist_ok=True)
+            os.system(f"cp {plugin_path} .")
             config = ProjectConfig(
                 pipeline=[
-                    render_webp,
+                    "plugin",
                 ],
                 output=cwd,
                 meta={
@@ -124,29 +126,11 @@ def main(release: str):
             )
             with run_beet(config=config) as ctx:
                 pass
+            os.system("rm plugin.py")
     except AlreadyExists:
         pass
 
-def render_webp(ctx: Context):
-    render = Render(ctx)
-    for model in render.getter._vanilla.assets.models:
-        namespace, path = model.split(":")
-        render.add_model_task(
-            model,
-            path_ctx=f"{namespace}:render/{path}",
-            animation_mode="webp",
-            animation_framerate=60,
-        )
-    components = get_default_components(ctx)
-    for item in components:
-        namespace, path = resolve_key(item).split(":")
-        render.add_item_task(
-            Item(id=f"{namespace}:{path}"),
-            path_ctx=f"{namespace}:render/items/{path}",
-            animation_mode="webp",
-            animation_framerate=60,
-        )
-    render.run()
+
 
 
 
