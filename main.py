@@ -45,6 +45,7 @@ def main(release: str):
     os.makedirs("branch", exist_ok=True)
 
     plugin_path = Path(__file__).parent / "plugin.py"
+    plugin_structure_path = Path(__file__).parent / "plugin_structure.py"
 
     try:
         with checkout_and_publish("renders", f"{release}-renders", release):
@@ -130,12 +131,43 @@ def main(release: str):
     except AlreadyExists:
         pass
 
+    # render structure :
+    try:
+        with checkout_and_publish(
+            "renders-structure", f"{release}-renders-structure", release
+        ):
+            cwd = Path(os.getcwd())
+            load_dir = cwd / "resourcepack"
+            print(f"Running beet in {cwd}")
+            os.system("rm -rf resourcepack")
+            os.makedirs("resourcepack", exist_ok=True)
+            os.system(f"cp {plugin_structure_path} .")
+            config = ProjectConfig(
+                pipeline=[
+                    "plugin_structure",
+                ],
+                output=cwd,
+                meta={
+                    "model_resolver": {
+                        "minecraft_version": release,
+                        "special_rendering": True,
+                        "preferred_minecraft_generated": "java",
+                    }
+                },
+                resource_pack={"load": load_dir, "name": load_dir.name},
+            )
+            with run_beet(config=config) as ctx:
+                pass
+            os.system("rm plugin_structure.py")
+    except AlreadyExists:
+        pass
+
 
 
 
 
 if __name__ == "__main__":
-    release = os.getenv("MC_VERSION", "1.21.4")
+    release = os.getenv("MC_VERSION", "1.21.10")
     if release is None or len(release) == 0:
         raise ValueError(f"MC_VERSION is not set, got {release}")
     if not "," in release:
