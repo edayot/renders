@@ -3,6 +3,8 @@ import shlex
 from pathlib import Path
 from beet import ProjectConfig, run_beet, Context
 from contextlib import contextmanager
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 devmode = False
 
@@ -167,7 +169,7 @@ def main(release: str):
 
 
 if __name__ == "__main__":
-    release = os.getenv("MC_VERSION", "1.21.10")
+    release = os.getenv("MC_VERSION", "26.1-snapshot-2")
     if release is None or len(release) == 0:
         raise ValueError(f"MC_VERSION is not set, got {release}")
     if not "," in release:
